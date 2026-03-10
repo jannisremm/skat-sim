@@ -21,6 +21,7 @@ class Player:
         if legal_cards:
             card_to_play = legal_cards.pop()
             self.cards.remove(card_to_play)
-        card_to_play = self.cards.pop()
+        else:
+            card_to_play = self.cards.pop()
 
         return card_to_play
