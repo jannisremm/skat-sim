@@ -10,6 +10,7 @@ class Player:
         self.name = name
         self.cards = []
         self.points = 0
+        self.won_tricks = []
 
     def play_card(self, cards_on_table):
         """Choses the best available legal card to play
@@ -29,6 +30,15 @@ class Player:
             card_to_play = self.cards.pop()
 
         return card_to_play
+
+    def take_skat(self, skat):
+        for card in skat:
+            self.cards.append(card)
+        random.shuffle(self.cards)
+        own_cards = []
+        own_cards.append(self.cards.pop())
+        own_cards.append(self.cards.pop())
+        self.won_tricks.append((own_cards))
 
     def determimne_trump_suit(self):
         return random.choice(SUITS)
