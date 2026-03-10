@@ -30,3 +30,16 @@ class Table:
         for player in [player1, player2, player3]:
             for _ in range(3):
                 player.cards.append(cards.pop())
+
+    def start_game(self, player1: Player, player2: Player, player3: Player):
+        chosen_player = random.choice([player1, player2, player3])
+        chosen_player.take_skat(self.skat)
+        chosen_player.determimne_trump_suit()
+
+    def play_round(self, player1: Player, player2: Player, player3: Player):
+        self.current_hand = []
+        self.current_hand.append((player1.name, player1.play_card(self.current_hand)))
+        self.current_hand.append((player2.name, player2.play_card(self.current_hand)))
+        self.current_hand.append((player3.name, player3.play_card(self.current_hand)))
+
+        # evaluate which player has won the trick
