@@ -1,5 +1,9 @@
 """This class defines the players, the cards in their hands and total points, and the actions they can take"""
 
+import random
+
+from cards import SUITS
+
 
 class Player:
     def __init__(self, name: str) -> None:
@@ -25,3 +29,6 @@ class Player:
             card_to_play = self.cards.pop()
 
         return card_to_play
+
+    def determimne_trump_suit(self):
+        return random.choice(SUITS)
