@@ -2,7 +2,7 @@
 
 import random
 
-from cards import create_deck
+from cards import RANKS, create_deck
 from player import Player
 
 
@@ -34,6 +34,7 @@ class Table:
 
     def start_game(self, player1: Player, player2: Player, player3: Player):
         chosen_player = random.choice([player1, player2, player3])
+        print("Player chosen to chose trump suit:", chosen_player.name)
         chosen_player.take_skat(self.skat)
         self.skat = []
         self.trump_suite = chosen_player.determimne_trump_suit()
@@ -41,13 +42,13 @@ class Table:
     def play_round(self, player1: Player, player2: Player, player3: Player):
         self.current_hand = []
         self.current_hand.append(
-            (player1.name, player1.play_card(self.current_hand, self.trump_suite))
+            (player1, player1.play_card(self.current_hand, self.trump_suite))
         )
         self.current_hand.append(
-            (player2.name, player2.play_card(self.current_hand, self.trump_suite))
+            (player2, player2.play_card(self.current_hand, self.trump_suite))
         )
         self.current_hand.append(
-            (player3.name, player3.play_card(self.current_hand, self.trump_suite))
+            (player3, player3.play_card(self.current_hand, self.trump_suite))
         )
 
         # evaluate which player has won the trick
@@ -56,3 +57,40 @@ class Table:
             highest trump card wins
         else:
             highest played card of the suit of the first played card wins"""
+        print("Current hand:", self.current_hand)
+        suit_to_follow = self.current_hand[0][1].suit
+        print("Suit to follow:", suit_to_follow)
+        current_winner = self.current_hand[0]
+
+        # check if the suit is correct
+        if self.current_hand[1][1].suit == suit_to_follow:
+            # check if the rank of the card is higher (earlier in the list of ranks)
+            if RANKS.index(self.current_hand[1][1].rank) < RANKS.index(
+                current_winner[1].rank
+            ):
+                current_winner = self.current_hand[1]
+        if self.current_hand[2][1].suit == suit_to_follow:
+            if RANKS.index(self.current_hand[2][1].rank) < RANKS.index(
+                current_winner[1].rank
+            ):
+                current_winner = self.current_hand[2]
+
+        current_winner[0].won_tricks.append(
+            [self.current_hand[0][1], self.current_hand[1][1], self.current_hand[2][1]]
+        )
+        print("Winner of the trick:", current_winner[0])
+        print("Winning card: ", current_winner[1])
+        print("Tricks won by current winner: ", current_winner[0].won_tricks)
+
+
+if __name__ == "__main__":
+    horst = Player("Horst")
+    ulf = Player("Ulf")
+    gunni = Player("Gunni")
+
+    tisch = Table()
+
+    tisch.deal_cards(horst, ulf, gunni)
+    tisch.start_game(horst, ulf, gunni)
+    for _ in range(10):
+        tisch.play_round(horst, ulf, gunni)
