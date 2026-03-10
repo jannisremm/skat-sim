@@ -12,7 +12,7 @@ class Player:
         self.points = 0
         self.won_tricks = []
 
-    def play_card(self, cards_on_table):
+    def play_card(self, cards_on_table, trump_suite):
         """Choses the best available legal card to play
         currently uses random logic"""
         if len(cards_on_table) == 0:
