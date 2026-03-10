@@ -21,7 +21,7 @@ class Player:
             return card_to_play
 
         # The second and third players need to follow suit
-        suit_to_follow = cards_on_table[0].suit
+        suit_to_follow = cards_on_table[0][1].suit
         legal_cards = [card for card in self.cards if card.suit == suit_to_follow]
         if legal_cards:
             card_to_play = legal_cards.pop()
