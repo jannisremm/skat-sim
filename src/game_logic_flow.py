@@ -15,3 +15,7 @@ print(horst.cards)
 print(ulf.cards)
 print(gunni.cards)
 print(tisch.skat)
+
+tisch.start_game(horst, ulf, gunni)
+
+tisch.play_round(horst, ulf, gunni)
