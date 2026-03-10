@@ -12,6 +12,10 @@ class Player:
         self.points = 0
         self.won_tricks = []
 
+    def __repr__(self) -> str:
+        # needs to be extended to fully represent the class
+        return self.name
+
     def play_card(self, cards_on_table, trump_suite):
         """Choses the best available legal card to play
         currently uses random logic"""
