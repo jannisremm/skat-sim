@@ -2,7 +2,8 @@
 
 
 class Player:
-    def __init__(self) -> None:
+    def __init__(self, name: str) -> None:
+        self.name = name
         self.cards = []
         self.points = 0
 
