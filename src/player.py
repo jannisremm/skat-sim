@@ -46,7 +46,10 @@ class Player:
         self.won_tricks.append((own_cards))
 
     def determimne_trump_suit(self):
-        return random.choice(SUITS)
+        suit_counts = {suit: 0 for suit in SUITS}
+        for card in self.cards:
+            suit_counts[card.suit] += 1
+        return max(suit_counts, key=suit_counts.get)  # type: ignore
 
     def get_game_points(self):
         points = 0
