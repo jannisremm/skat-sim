@@ -33,11 +33,14 @@ class Table:
                 player.cards.append(cards.pop())
 
     def start_game(self, player1: Player, player2: Player, player3: Player):
+        for player in [player1, player2, player3]:
+            player.current_game_team = ""
         chosen_player = random.choice([player1, player2, player3])
         print("Player chosen to chose trump suit:", chosen_player.name)
         chosen_player.take_skat(self.skat)
         self.skat = []
         self.trump_suite = chosen_player.determimne_trump_suit()
+        chosen_player.current_game_team = "Re"
 
     def play_round(self, player1: Player, player2: Player, player3: Player):
         self.current_hand = []
@@ -82,6 +85,29 @@ class Table:
         print("Winning card: ", current_winner[1])
         print("Tricks won by current winner: ", current_winner[0].won_tricks)
 
+    def determine_winner(self, player1: Player, player2: Player, player3: Player):
+        re_team = []
+        contra_team = []
+        for player in [player1, player2, player3]:
+            if player.current_game_team == "Re":
+                re_team.append(player)
+            else:
+                contra_team.append(player)
+        print("Re Team:", re_team[0].get_game_points())
+        print(re_team[0].get_game_points(), re_team[0].name)
+
+        contra_team_points = (
+            contra_team[0].get_game_points() + contra_team[1].get_game_points()
+        )
+        print("Contra Team:", contra_team_points)
+        print(contra_team[0].get_game_points(), contra_team[0].name)
+        print(contra_team[1].get_game_points(), contra_team[1].name)
+
+        if re_team[0].get_game_points() > 60:
+            re_team[0].total_points += re_team[0].get_game_points()
+        else:
+            re_team[0].total_points -= 2 * re_team[0].get_game_points()
+
 
 if __name__ == "__main__":
     horst = Player("Horst")
@@ -94,3 +120,4 @@ if __name__ == "__main__":
     tisch.start_game(horst, ulf, gunni)
     for _ in range(10):
         tisch.play_round(horst, ulf, gunni)
+    tisch.determine_winner(horst, ulf, gunni)
