@@ -35,6 +35,7 @@ class Table:
     def start_game(self, player1: Player, player2: Player, player3: Player):
         for player in [player1, player2, player3]:
             player.current_game_team = ""
+            player.won_tricks = []
         chosen_player = random.choice([player1, player2, player3])
         print("Player chosen to chose trump suit:", chosen_player.name)
         chosen_player.take_skat(self.skat)
@@ -60,9 +61,9 @@ class Table:
             highest trump card wins
         else:
             highest played card of the suit of the first played card wins"""
-        print("Current hand:", self.current_hand)
+        # print("Current hand:", self.current_hand)
         suit_to_follow = self.current_hand[0][1].suit
-        print("Suit to follow:", suit_to_follow)
+        # print("Suit to follow:", suit_to_follow)
         current_winner = self.current_hand[0]
 
         # check if the suit is correct
@@ -81,11 +82,11 @@ class Table:
         current_winner[0].won_tricks.append(
             [self.current_hand[0][1], self.current_hand[1][1], self.current_hand[2][1]]
         )
-        print("Winner of the trick:", current_winner[0])
-        print("Winning card: ", current_winner[1])
-        print("Tricks won by current winner: ", current_winner[0].won_tricks)
+        # print("Winner of the trick:", current_winner[0])
+        # print("Winning card: ", current_winner[1])
+        # print("Tricks won by current winner: ", current_winner[0].won_tricks)
 
-    def determine_winner(self, player1: Player, player2: Player, player3: Player):
+    def determine_round_winner(self, player1: Player, player2: Player, player3: Player):
         re_team = []
         contra_team = []
         for player in [player1, player2, player3]:
@@ -108,6 +109,13 @@ class Table:
         else:
             re_team[0].total_points -= 2 * re_team[0].get_game_points()
 
+    def determine_total_winner(self, player1: Player, player2: Player, player3: Player):
+        players = [player1, player2, player3]
+        ranking = sorted(players, key=lambda player: player.total_points, reverse=True)
+        print("First place:\t", ranking[0], "\t", ranking[0].total_points)
+        print("Second place:\t", ranking[1], "\t", ranking[1].total_points)
+        print("Third place:\t", ranking[2], "\t", ranking[2].total_points)
+
 
 if __name__ == "__main__":
     horst = Player("Horst")
@@ -116,8 +124,10 @@ if __name__ == "__main__":
 
     tisch = Table()
 
-    tisch.deal_cards(horst, ulf, gunni)
-    tisch.start_game(horst, ulf, gunni)
-    for _ in range(10):
-        tisch.play_round(horst, ulf, gunni)
-    tisch.determine_winner(horst, ulf, gunni)
+    for _ in range(9):
+        tisch.deal_cards(horst, ulf, gunni)
+        tisch.start_game(horst, ulf, gunni)
+        for _ in range(10):
+            tisch.play_round(horst, ulf, gunni)
+        tisch.determine_round_winner(horst, ulf, gunni)
+        tisch.determine_total_winner(horst, ulf, gunni)
