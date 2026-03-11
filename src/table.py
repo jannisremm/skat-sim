@@ -7,7 +7,8 @@ from player import Player
 
 
 class Table:
-    def __init__(self) -> None:
+    def __init__(self, players) -> None:
+        self.players = players
         self.skat = []
         self.current_hand = []
         self.trump_suite = None
@@ -16,43 +17,52 @@ class Table:
         """shuffles the list of cards"""
         pass
 
-    def deal_cards(self, player1: Player, player2: Player, player3: Player):
+    def deal_cards(self):
         """Deals the cards to the three players and the skat to the table"""
         cards = create_deck()
         random.shuffle(cards)
-        for player in [player1, player2, player3]:
+        for player in self.players:
             for _ in range(3):
                 player.cards.append(cards.pop())
         self.skat.append(cards.pop())
         self.skat.append(cards.pop())
-        for player in [player1, player2, player3]:
+        for player in self.players:
             for _ in range(4):
                 player.cards.append(cards.pop())
-        for player in [player1, player2, player3]:
+        for player in self.players:
             for _ in range(3):
                 player.cards.append(cards.pop())
 
-    def start_game(self, player1: Player, player2: Player, player3: Player):
-        for player in [player1, player2, player3]:
+    def start_game(self):
+        for player in self.players:
             player.current_game_team = ""
             player.won_tricks = []
-        chosen_player = random.choice([player1, player2, player3])
+        chosen_player = random.choice(self.players)
         print("Player chosen to chose trump suit:", chosen_player.name)
         chosen_player.take_skat(self.skat)
         self.skat = []
         self.trump_suite = chosen_player.determimne_trump_suit()
         chosen_player.current_game_team = "Re"
 
-    def play_round(self, player1: Player, player2: Player, player3: Player):
+    def play_round(self):
         self.current_hand = []
         self.current_hand.append(
-            (player1, player1.play_card(self.current_hand, self.trump_suite))
+            (
+                self.players[0],
+                self.players[0].play_card(self.current_hand, self.trump_suite),
+            )
         )
         self.current_hand.append(
-            (player2, player2.play_card(self.current_hand, self.trump_suite))
+            (
+                self.players[1],
+                self.players[1].play_card(self.current_hand, self.trump_suite),
+            )
         )
         self.current_hand.append(
-            (player3, player3.play_card(self.current_hand, self.trump_suite))
+            (
+                self.players[2],
+                self.players[2].play_card(self.current_hand, self.trump_suite),
+            )
         )
 
         # evaluate which player has won the trick
@@ -86,10 +96,10 @@ class Table:
         # print("Winning card: ", current_winner[1])
         # print("Tricks won by current winner: ", current_winner[0].won_tricks)
 
-    def determine_round_winner(self, player1: Player, player2: Player, player3: Player):
+    def determine_round_winner(self):
         re_team = []
         contra_team = []
-        for player in [player1, player2, player3]:
+        for player in self.players:
             if player.current_game_team == "Re":
                 re_team.append(player)
             else:
@@ -109,9 +119,9 @@ class Table:
         else:
             re_team[0].total_points -= 2 * re_team[0].get_game_points()
 
-    def determine_total_winner(self, player1: Player, player2: Player, player3: Player):
-        players = [player1, player2, player3]
-        ranking = sorted(players, key=lambda player: player.total_points, reverse=True)
+    def determine_total_winner(self):
+        players = self.players
+        ranking = sorted(players, key=lambda player: player.total_points, reverse=True)  # type: ignore
         print("First place:\t", ranking[0], "\t", ranking[0].total_points)
         print("Second place:\t", ranking[1], "\t", ranking[1].total_points)
         print("Third place:\t", ranking[2], "\t", ranking[2].total_points)
@@ -122,12 +132,12 @@ if __name__ == "__main__":
     ulf = Player("Ulf")
     gunni = Player("Gunni")
 
-    tisch = Table()
+    tisch = Table([horst, ulf, gunni])
 
     for _ in range(9):
-        tisch.deal_cards(horst, ulf, gunni)
-        tisch.start_game(horst, ulf, gunni)
+        tisch.deal_cards()
+        tisch.start_game()
         for _ in range(10):
-            tisch.play_round(horst, ulf, gunni)
-        tisch.determine_round_winner(horst, ulf, gunni)
-        tisch.determine_total_winner(horst, ulf, gunni)
+            tisch.play_round()
+        tisch.determine_round_winner()
+        tisch.determine_total_winner()
