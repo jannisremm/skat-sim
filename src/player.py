@@ -9,8 +9,9 @@ class Player:
     def __init__(self, name: str) -> None:
         self.name = name
         self.cards = []
-        self.points = 0
+        self.total_points = 0
         self.won_tricks = []
+        self.current_game_team = ""
 
     def __repr__(self) -> str:
         # needs to be extended to fully represent the class
@@ -46,3 +47,10 @@ class Player:
 
     def determimne_trump_suit(self):
         return random.choice(SUITS)
+
+    def get_game_points(self):
+        points = 0
+        for trick in self.won_tricks:
+            for card in trick:
+                points += card.points
+        return points
