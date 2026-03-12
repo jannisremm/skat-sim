@@ -20,6 +20,9 @@ class Table:
 
     def deal_cards(self):
         """Deals the cards to the three players and the skat to the table"""
+        for player in self.players:
+            player.cards = []
+        self.skat = []
         cards = create_deck()
         random.shuffle(cards)
         for player in self.players:
@@ -128,7 +131,9 @@ class Table:
         elif re_team_points >= 90 or re_team_points <= 30:
             bonus_multiplier += 1
 
-        self.current_game_value = re_team.determine_game_value(bonus_multiplier)
+        self.current_game_value = re_team.determine_game_value(
+            bonus_multiplier, self.trump_suite
+        )
 
         print("Game value:", self.current_game_value)
         if re_team_points > 60:
