@@ -96,6 +96,13 @@ class Table:
         # print("Winning card: ", current_winner[1])
         # print("Tricks won by current winner: ", current_winner[0].won_tricks)
 
+        """Change the player order, so the player that won the trick plays first next round"""
+        winner_position = self.players.index(current_winner[0])
+        # print("Current order:", self.players)
+        # print("Winner position: ", winner_position)
+        self.players = self.players[winner_position:] + self.players[:winner_position]
+        # print("new order:", self.players)
+
     def determine_round_winner(self):
         re_team = []
         contra_team = []
