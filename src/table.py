@@ -12,6 +12,7 @@ class Table:
         self.skat = []
         self.current_hand = []
         self.trump_suite = None
+        self.current_game_value = 0
 
     def shuffle_cards(self):
         """shuffles the list of cards"""
@@ -44,7 +45,8 @@ class Table:
         self.trump_suite = chosen_player.determine_trump_suit()
         print("Chosen trump suit:", self.trump_suite)
         chosen_player.current_game_team = "Re"
-        print("Game value:", chosen_player.determine_game_value())
+        self.current_game_value = chosen_player.determine_game_value()
+        print("Game value:", self.current_game_value)
 
     def play_round(self):
         self.current_hand = []
@@ -124,9 +126,9 @@ class Table:
         print(contra_team[1].get_game_points(), contra_team[1].name)
 
         if re_team[0].get_game_points() > 60:
-            re_team[0].total_points += re_team[0].get_game_points()
+            re_team[0].total_points += self.current_game_value
         else:
-            re_team[0].total_points -= 2 * re_team[0].get_game_points()
+            re_team[0].total_points -= 2 * self.current_game_value
 
     def determine_total_winner(self):
         players = self.players
