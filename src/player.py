@@ -9,6 +9,7 @@ class Player:
     def __init__(self, name: str) -> None:
         self.name = name
         self.cards = []
+        self.remembered_cards = tuple()
         self.total_points = 0
         self.won_tricks = []
         self.current_game_team = ""
@@ -16,6 +17,9 @@ class Player:
     def __repr__(self) -> str:
         # needs to be extended to fully represent the class
         return self.name
+
+    def remember_cards(self):
+        self.remembered_cards = tuple(self.cards)
 
     def play_card(self, cards_on_table, trump_suite):
         """Choses the best available legal card to play
@@ -44,6 +48,7 @@ class Player:
         own_cards.append(self.cards.pop())
         own_cards.append(self.cards.pop())
         self.won_tricks.append((own_cards))
+        self.remembered_cards = tuple(self.cards) + tuple(skat)
 
     def determine_trump_suit(self):
         suit_counts = {suit: 0 for suit in SUITS}
@@ -53,10 +58,12 @@ class Player:
             suit_counts[card.suit] += 1
         return max(suit_counts, key=suit_counts.get)  # type: ignore
 
-    def determine_game_value(self):
+    def determine_game_value(self, bonus_multipliers):
         """Determine count and order of Unter"""
-        unter_suits = {card.suit for card in self.cards if card.rank == "Unter"}
-        print(unter_suits)
+        unter_suits = {
+            card.suit for card in self.remembered_cards if card.rank == "Unter"
+        }
+        print("Unter:", unter_suits)
         count = 0
         if SUITS[0] in unter_suits:
             for suit in SUITS:
@@ -72,7 +79,7 @@ class Player:
                     break
         trump_suit = self.determine_trump_suit()
         suit_multipliers = {SUITS[0]: 12, SUITS[1]: 11, SUITS[2]: 10, SUITS[3]: 9}
-        return suit_multipliers[trump_suit] * (count + 1)
+        return suit_multipliers[trump_suit] * (count + 1 + bonus_multipliers)
 
     def get_game_points(self):
         points = 0
