@@ -34,6 +34,9 @@ class Table:
             for _ in range(3):
                 player.cards.append(cards.pop())
 
+        for player in self.players:
+            player.remember_cards()
+
     def start_game(self):
         for player in self.players:
             player.current_game_team = ""
@@ -45,8 +48,6 @@ class Table:
         self.trump_suite = chosen_player.determine_trump_suit()
         print("Chosen trump suit:", self.trump_suite)
         chosen_player.current_game_team = "Re"
-        self.current_game_value = chosen_player.determine_game_value()
-        print("Game value:", self.current_game_value)
 
     def play_round(self):
         self.current_hand = []
@@ -108,6 +109,7 @@ class Table:
         # print("new order:", self.players)
 
     def determine_round_winner(self):
+        bonus_multiplier = 0
         re_team = []
         contra_team = []
         for player in self.players:
@@ -125,10 +127,20 @@ class Table:
         print(contra_team[0].get_game_points(), contra_team[0].name)
         print(contra_team[1].get_game_points(), contra_team[1].name)
 
+        if re_team[0].get_game_points() == 120 or re_team[0].get_game_points() == 0:
+            bonus_multiplier += 2
+        elif re_team[0].get_game_points() >= 90 or re_team[0].get_game_points() <= 30:
+            bonus_multiplier += 1
+        self.current_game_value = re_team[0].determine_game_value(bonus_multiplier)
+        print("Game value:", self.current_game_value)
         if re_team[0].get_game_points() > 60:
+            print("Re team has won")
             re_team[0].total_points += self.current_game_value
+            print(re_team[0], "gains", self.current_game_value)
         else:
+            print("Contra team has won")
             re_team[0].total_points -= 2 * self.current_game_value
+            print(re_team[0], "loses", 2 * self.current_game_value)
 
     def determine_total_winner(self):
         players = self.players
