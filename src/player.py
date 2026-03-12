@@ -24,6 +24,7 @@ class Player:
     def play_card(self, cards_on_table, trump_suite):
         """Choses the best available legal card to play
         currently uses random logic"""
+        # print("Number of cards:", len(self.cards))
         if len(cards_on_table) == 0:
             # The first card that is played can be random
             card_to_play = self.cards.pop()
@@ -37,7 +38,6 @@ class Player:
             self.cards.remove(card_to_play)
         else:
             card_to_play = self.cards.pop()
-
         return card_to_play
 
     def take_skat(self, skat):
@@ -58,7 +58,7 @@ class Player:
             suit_counts[card.suit] += 1
         return max(suit_counts, key=suit_counts.get)  # type: ignore
 
-    def determine_game_value(self, bonus_multipliers):
+    def determine_game_value(self, bonus_multipliers, trump_suit):
         """Determine count and order of Unter"""
         unter_suits = {
             card.suit for card in self.remembered_cards if card.rank == "Unter"
@@ -77,8 +77,15 @@ class Player:
                     count += 1
                 else:
                     break
-        trump_suit = self.determine_trump_suit()
         suit_multipliers = {SUITS[0]: 12, SUITS[1]: 11, SUITS[2]: 10, SUITS[3]: 9}
+        # print(
+        #     "Chosen Suit:",
+        #     trump_suit,
+        #     "Suit value:",
+        #     suit_multipliers[trump_suit],
+        #     "multiplier:",
+        #     (count + 1 + bonus_multipliers),
+        # )
         return suit_multipliers[trump_suit] * (count + 1 + bonus_multipliers)
 
     def get_game_points(self):
