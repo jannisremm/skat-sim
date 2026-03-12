@@ -109,38 +109,36 @@ class Table:
         # print("new order:", self.players)
 
     def determine_round_winner(self):
-        bonus_multiplier = 0
-        re_team = []
-        contra_team = []
-        for player in self.players:
-            if player.current_game_team == "Re":
-                re_team.append(player)
-            else:
-                contra_team.append(player)
-        print("Re Team:", re_team[0].get_game_points())
-        print(re_team[0].get_game_points(), re_team[0].name)
-
-        contra_team_points = (
-            contra_team[0].get_game_points() + contra_team[1].get_game_points()
+        re_team = next(
+            player for player in self.players if player.current_game_team == "Re"
         )
-        print("Contra Team:", contra_team_points)
+        contra_team = [player for player in self.players if player is not re_team]
+
+        re_team_points = re_team.get_game_points()
+        contra_team_points = sum(player.get_game_points() for player in contra_team)
+        print("Re:", re_team_points, re_team.name)
+
+        print("Contra:", contra_team_points)
         print(contra_team[0].get_game_points(), contra_team[0].name)
         print(contra_team[1].get_game_points(), contra_team[1].name)
 
-        if re_team[0].get_game_points() == 120 or re_team[0].get_game_points() == 0:
+        bonus_multiplier = 0
+        if re_team_points in (0, 120):
             bonus_multiplier += 2
-        elif re_team[0].get_game_points() >= 90 or re_team[0].get_game_points() <= 30:
+        elif re_team_points >= 90 or re_team_points <= 30:
             bonus_multiplier += 1
-        self.current_game_value = re_team[0].determine_game_value(bonus_multiplier)
+
+        self.current_game_value = re_team.determine_game_value(bonus_multiplier)
+
         print("Game value:", self.current_game_value)
-        if re_team[0].get_game_points() > 60:
+        if re_team_points > 60:
             print("Re team has won")
-            re_team[0].total_points += self.current_game_value
-            print(re_team[0], "gains", self.current_game_value)
+            re_team.total_points += self.current_game_value
+            print(re_team, "gains", self.current_game_value)
         else:
             print("Contra team has won")
-            re_team[0].total_points -= 2 * self.current_game_value
-            print(re_team[0], "loses", 2 * self.current_game_value)
+            re_team.total_points -= 2 * self.current_game_value
+            print(re_team, "loses", 2 * self.current_game_value)
 
     def determine_total_winner(self):
         players = self.players
