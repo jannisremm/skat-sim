@@ -45,11 +45,34 @@ class Player:
         own_cards.append(self.cards.pop())
         self.won_tricks.append((own_cards))
 
-    def determimne_trump_suit(self):
+    def determine_trump_suit(self):
         suit_counts = {suit: 0 for suit in SUITS}
         for card in self.cards:
+            if card.rank == "Unter":
+                continue
             suit_counts[card.suit] += 1
         return max(suit_counts, key=suit_counts.get)  # type: ignore
+
+    def determine_game_value(self):
+        """Determine count and order of Unter"""
+        unter_suits = {card.suit for card in self.cards if card.rank == "Unter"}
+        print(unter_suits)
+        count = 0
+        if SUITS[0] in unter_suits:
+            for suit in SUITS:
+                if suit in unter_suits:
+                    count += 1
+                else:
+                    break
+        else:
+            for suit in SUITS:
+                if suit not in unter_suits:
+                    count += 1
+                else:
+                    break
+        trump_suit = self.determine_trump_suit()
+        suit_multipliers = {SUITS[0]: 12, SUITS[1]: 11, SUITS[2]: 10, SUITS[3]: 9}
+        return suit_multipliers[trump_suit] * (count + 1)
 
     def get_game_points(self):
         points = 0

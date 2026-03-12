@@ -41,8 +41,10 @@ class Table:
         print("Player chosen to chose trump suit:", chosen_player.name)
         chosen_player.take_skat(self.skat)
         self.skat = []
-        self.trump_suite = chosen_player.determimne_trump_suit()
+        self.trump_suite = chosen_player.determine_trump_suit()
+        print("Chosen trump suit:", self.trump_suite)
         chosen_player.current_game_team = "Re"
+        print("Game value:", chosen_player.determine_game_value())
 
     def play_round(self):
         self.current_hand = []
